@@ -1,2 +1,4 @@
-# swa_misc
+# SWA Diagramme
 Beim Code aufräumen ist mir aufgefallen, dass es wichtig wäre ein gemeinsames Verständnis uns insbesondere eine single source of truth zu haben, was unsere Architektur angeht. Weil Squeak und Git habe ich deshalb jetzt ein neues Repository aufgemacht, in dem eine .puml file liegt. Das ist eine plantUML file. Das ist ein sehr populäres Format für UML-Diagramme. Ihr könnt euch beispielsweise in VS Code eine Extension holen, mit der ihr das immer previewn oder exporten könnt etc. Ich würde vorschlagen, zu jedem Commit, der die Architektur anpasst, neue Methoden hinzufügt etc. das Diagramm anzupassen und hier ebenfalls einen commit zu machen, weil das es wesentlich leichter macht, die aktuelle Architektur zu verstehen, Refactorings zu planen, Stellen festzustellen, die man verbessern könnte usw.
+
+![alt text](/out/diagram/EmperorPaperplane.svg)
