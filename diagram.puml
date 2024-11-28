@@ -2,10 +2,6 @@
 
 package SWAGroup12 {
 
-    class CommanderCody {
-        +TheTimeHasCome() : CommanderCody
-        +ExecuteOrder66() : void
-    }
 
     class EP_Board {
         -tiles
@@ -58,6 +54,9 @@ package SWAGroup12 {
     class EP_EditorBEventHandler {
         +isNextToPrevious(aTile) : Boolean
         +isOnEdge(aTile) : Boolean
+    }
+
+    class EP_PlayBEventHandler {
     }
 
     class EP_TowerPlacementPopUp {
@@ -117,20 +116,20 @@ package SWAGroup12 {
         +spawnEnemy()
     }
 
-    CommanderCody --> EP_Board
     EP_Board *--> EP_Tile
     EP_Board --> EP_BoardEventHandler
     EP_BoardEventHandler <|-- EP_EditorBEventHandler
+    EP_BoardEventHandler <|-- EP_PlayBEventHandler
     EP_Board *--> EP_Enemy
     EP_Board --> EP_TowerPlacementPopUp
     EP_GameMode <|-- EP_MenuMode
     EP_GameMode <|-- EP_EditorMode
     EP_GameMode <|-- EP_PlayMode
-    EP_GameMode --> EP_Menu
+    EP_MenuMode --> EP_Menu
     EP_GameMode --> EP_GameWindow
-    EP_GameWindow --> EP_Board
-    EP_GameWindow --> EP_NotAGameManager
-    EP_PlayMode --> EP_NotAGameManager
+    EP_PlayMode --> EP_Board
+    EP_EditorMode --> EP_Board
+    EP_PlayMode ... EP_NotAGameManager
     EP_NotAGameManager *--> EP_Enemy
     EP_TowerPlacementPopUp --> EP_Tile
     EP_Tile --> EP_Board
