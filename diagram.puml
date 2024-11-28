@@ -60,11 +60,19 @@ package SWAGroup12 {
         +isOnEdge(aTile) : Boolean
     }
 
+    class EP_TowerPlacementPopUp {
+        -tile
+        -board
+        +initializeWith(aBoard, aTile)
+        +placeTowerWithAsset(aAsset)
+    }
+
     class EP_GameMode {
         -window
         -mainView
         -bottomView
         +switchTo(aModeClass)
+        +takeOver(aArgs)
     }
 
     class EP_Menu {
@@ -77,15 +85,54 @@ package SWAGroup12 {
     class EP_MenuMode {
         +initialize()
         +startEditor()
+        +playGame()
+    }
+
+    class EP_PlayMode {
+        -submode
+        +takeOver(aArgs)
+        +stopGame()
+        +goToEditor()
+    }
+
+    class EP_EditorMode {
+        -phase
+        +initialize()
+        +playMap()
+        +takeOver(aArgs)
+    }
+
+    class EP_GameWindow {
+        -mainView
+        -bottomView
+        +adjustSize()
+        +openInWindow()
+    }
+
+    class EP_NotAGameManager {
+        -way
+        -map
+        -money
+        -lives
+        +spawnEnemy()
     }
 
     CommanderCody --> EP_Board
     EP_Board *--> EP_Tile
     EP_Board --> EP_BoardEventHandler
     EP_BoardEventHandler <|-- EP_EditorBEventHandler
-    EP_GameMode <|-- EP_MenuMode
-    EP_GameMode --> EP_Menu
     EP_Board *--> EP_Enemy
+    EP_Board --> EP_TowerPlacementPopUp
+    EP_GameMode <|-- EP_MenuMode
+    EP_GameMode <|-- EP_EditorMode
+    EP_GameMode <|-- EP_PlayMode
+    EP_GameMode --> EP_Menu
+    EP_GameMode --> EP_GameWindow
+    EP_GameWindow --> EP_Board
+    EP_GameWindow --> EP_NotAGameManager
+    EP_PlayMode --> EP_NotAGameManager
+    EP_NotAGameManager *--> EP_Enemy
+    EP_TowerPlacementPopUp --> EP_Tile
     EP_Tile --> EP_Board
 
 }
