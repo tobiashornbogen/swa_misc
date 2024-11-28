@@ -1,0 +1,93 @@
+@startuml
+
+package SWAGroup12 {
+
+    class CommanderCody {
+        +TheTimeHasCome() : CommanderCody
+        +ExecuteOrder66() : void
+    }
+
+    class EP_Board {
+        -tiles
+        -boardSize
+        -tileSize
+        -way
+        -boardEventHandler
+        -towerPlacementPopUp
+        -towerPlacementPopUpSize
+        +initialize()
+        +boardEventHandler()
+        +boardEventHandler(aHandler)
+        +setTowerPlacementPopup(aPopup)
+        +tiles() : Matrix
+    }
+
+    class EP_Tile {
+        -twBorderColor
+        -board
+        -matrixLocation
+        -occupied
+        -locked
+        +createTowerPlacementPopUp()
+        +placeTower(aTower)
+        +removeTower()
+    }
+
+    class EP_Enemy {
+        -damage
+        -health
+        -speed
+        -way
+        -position
+        -progress
+        -tileProgress
+        -distancePerStep
+        -stepsPerTile
+        -gameManager
+        +initialize()
+        +kill()
+        +moveAlongPath()
+    }
+
+    class EP_BoardEventHandler {
+        -manager
+        -board
+        +tileClicked(aTile)
+    }
+
+    class EP_EditorBEventHandler {
+        +isNextToPrevious(aTile) : Boolean
+        +isOnEdge(aTile) : Boolean
+    }
+
+    class EP_GameMode {
+        -window
+        -mainView
+        -bottomView
+        +switchTo(aModeClass)
+    }
+
+    class EP_Menu {
+        -manager
+        +editorClicked()
+        +playClicked()
+        +quitClicked()
+    }
+
+    class EP_MenuMode {
+        +initialize()
+        +startEditor()
+    }
+
+    CommanderCody --> EP_Board
+    EP_Board *--> EP_Tile
+    EP_Board --> EP_BoardEventHandler
+    EP_BoardEventHandler <|-- EP_EditorBEventHandler
+    EP_GameMode <|-- EP_MenuMode
+    EP_GameMode --> EP_Menu
+    EP_Board *--> EP_Enemy
+    EP_Tile --> EP_Board
+
+}
+
+@enduml
