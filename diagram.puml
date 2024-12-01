@@ -4,29 +4,36 @@ package SWAGroup12 {
 
 
     class EP_Board {
-        -tiles
-        -boardSize
+        -tiles : Matrix
+        -boardSize : Point
         -tileSize
         -way
-        -boardEventHandler
+        -manager
         -towerPlacementPopUp
         -towerPlacementPopUpSize
         +initialize()
-        +boardEventHandler()
-        +boardEventHandler(aHandler)
+        +backgroundImagePath(aPath)
+        +redrawGridWithTileType(aTileClass)
+        +setPixelSize(aPoint)
         +setTowerPlacementPopup(aPopup)
-        +tiles() : Matrix
     }
 
     class EP_Tile {
-        -twBorderColor
         -board
         -matrixLocation
         -occupied
         -locked
-        +createTowerPlacementPopUp()
+        +initialize()
+        +leftClicked() (SCR)
+        +size(aPointOrLength)
+    }
+
+    class EP_EditorTile {
+        +leftClicked()
+    }
+    class EP_PlayTile {
+        +leftClicked()
         +placeTower(aTower)
-        +removeTower()
     }
 
     class EP_Enemy {
@@ -45,20 +52,6 @@ package SWAGroup12 {
         +moveAlongPath()
     }
 
-    class EP_BoardEventHandler {
-        -manager
-        -board
-        +tileClicked(aTile)
-    }
-
-    class EP_EditorBEventHandler {
-        +isNextToPrevious(aTile) : Boolean
-        +isOnEdge(aTile) : Boolean
-    }
-
-    class EP_PlayBEventHandler {
-    }
-
     class EP_TowerPlacementPopUp {
         -tile
         -board
@@ -68,44 +61,67 @@ package SWAGroup12 {
 
     class EP_GameMode {
         -window
+        +_newWithWindow(aWindow) (class)
+        +getMainView() : Morph (SCR)
+        +getSideView() : Morph (SCR)
+    }
+
+    class EP_MenuMode {
+        -menuPage
+        +initialize()
+        +quitGame()
+    }
+
+    class EP_PlayMode {
+        -level
+        -sidebar
+        -gameManager
+        +initialize()
+        +initLevel(aLevel)
+    }
+
+    class EP_EditorMode {
+        -level
+        -sidebar
+        -phase
+        +initialize()
+        +initLevel(aLevel)
+        +phase(aPhase)
+    }
+
+    class EP_Sidebar {
+        -manager
+        +drawForExtent(aPoint)
+    }
+
+    class EP_EditorSidebar {
+        +initialize()
+        +adjustToPhase(aPhase)
+    }
+
+    class EP_PlaySidebar {
+        +initialize()
+    }
+
+    class EP_GameWindow {
+        -mode
         -mainView
-        -bottomView
-        +switchTo(aModeClass)
-        +takeOver(aArgs)
+        -sideView
+        -sideViewWidth
+        +initialize()
+        +getMainViewSize() : Point
+        +getSideViewSize() : Point
+        +openInWindow()
+        +switchToEditorWithLevel(aLevel)
+        +switchToPlayWithLevel(aLevel)
+        +switchToMenu()
     }
 
     class EP_Menu {
         -manager
-        +editorClicked()
-        +playClicked()
-        +quitClicked()
-    }
-
-    class EP_MenuMode {
         +initialize()
-        +startEditor()
-        +playGame()
-    }
-
-    class EP_PlayMode {
-        -submode
-        +takeOver(aArgs)
-        +stopGame()
-        +goToEditor()
-    }
-
-    class EP_EditorMode {
-        -phase
-        +initialize()
-        +playMap()
-        +takeOver(aArgs)
-    }
-
-    class EP_GameWindow {
-        -mainView
-        -bottomView
-        +adjustSize()
-        +openInWindow()
+        +extent()
+        +drawMainpage()
     }
 
     class EP_NotAGameManager {
@@ -116,24 +132,39 @@ package SWAGroup12 {
         +spawnEnemy()
     }
 
+    class EP_Level {
+        -board
+    }
+
+
+    EP_GameWindow --> EP_GameMode
+
     EP_Board *--> EP_Tile
-    EP_Board --> EP_BoardEventHandler
-    EP_BoardEventHandler <|-- EP_EditorBEventHandler
-    EP_BoardEventHandler <|-- EP_PlayBEventHandler
     EP_Board *--> EP_Enemy
     EP_Board --> EP_TowerPlacementPopUp
+
     EP_GameMode <|-- EP_MenuMode
     EP_GameMode <|-- EP_EditorMode
     EP_GameMode <|-- EP_PlayMode
+
     EP_MenuMode --> EP_Menu
-    EP_GameMode --> EP_GameWindow
-    EP_PlayMode --> EP_Board
-    EP_EditorMode --> EP_Board
+    
+    EP_PlayMode --> EP_Level
+    EP_PlayMode --> EP_PlaySidebar
+    EP_EditorMode --> EP_Level
+    EP_EditorMode --> EP_EditorSidebar
+    EP_Level --> EP_Board
+
     EP_PlayMode ... EP_NotAGameManager
     EP_NotAGameManager *--> EP_Enemy
     EP_TowerPlacementPopUp --> EP_Tile
+    
     EP_Tile --> EP_Board
+    EP_Tile <|-- EP_PlayTile
+    EP_Tile <|-- EP_EditorTile
 
+    EP_EditorSidebar --|> EP_Sidebar 
+    EP_PlaySidebar --|> EP_Sidebar
 }
 
 @enduml
