@@ -89,6 +89,20 @@ package SWAGroup12 {
         +phase(aPhase)
     }
 
+    class EP_Sidebar {
+        -manager
+        +drawForExtent(aPoint)
+    }
+
+    class EP_EditorSidebar {
+        +initialize()
+        +adjustToPhase(aPhase)
+    }
+
+    class EP_PlaySidebar {
+        +initialize()
+    }
+
     class EP_GameWindow {
         -mode
         -mainView
@@ -122,25 +136,35 @@ package SWAGroup12 {
         -board
     }
 
+
     EP_GameWindow --> EP_GameMode
+
     EP_Board *--> EP_Tile
     EP_Board *--> EP_Enemy
     EP_Board --> EP_TowerPlacementPopUp
+
     EP_GameMode <|-- EP_MenuMode
     EP_GameMode <|-- EP_EditorMode
     EP_GameMode <|-- EP_PlayMode
+
     EP_MenuMode --> EP_Menu
     
     EP_PlayMode --> EP_Level
+    EP_PlayMode --> EP_PlaySidebar
     EP_EditorMode --> EP_Level
+    EP_EditorMode --> EP_EditorSidebar
     EP_Level --> EP_Board
+
     EP_PlayMode ... EP_NotAGameManager
     EP_NotAGameManager *--> EP_Enemy
     EP_TowerPlacementPopUp --> EP_Tile
+    
     EP_Tile --> EP_Board
     EP_Tile <|-- EP_PlayTile
     EP_Tile <|-- EP_EditorTile
 
+    EP_EditorSidebar --|> EP_Sidebar 
+    EP_PlaySidebar --|> EP_Sidebar
 }
 
 @enduml
