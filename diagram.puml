@@ -47,9 +47,47 @@ package SWAGroup12 {
         -distancePerStep
         -stepsPerTile
         -gameManager
+        -enemyWaveManager
+        -transformationMorph
         +initialize()
         +kill()
         +moveAlongPath()
+        +addSpecification(enemySpecificationType)
+    }
+
+    class EP_EnemyWaveSpawner {
+        -gameManager
+        -board
+        +initialize()
+        +spawnWave(enemyWave)
+        +spawnEnemy(enemySpecification, enemyWave)
+    }
+
+    class EP_EnemyWave {
+        -enemyWaveManager
+        -enemySpecification
+        -enemyCount
+        -enemiesLeft
+        -enemySpawnTime
+        -waveStartingTime
+        +initialize()
+        +anEnemyDied()
+    }
+
+    class EP_EnemyWaveManager {
+        -level
+        -enemyWaveSpawner
+        -stageCount
+        -wavesInStage
+        -stageRunning
+        +initialize()
+        +nextStartStage()
+        +waveFinished()
+    }
+
+    class EP_Stage {
+        -waves
+        +initialize()
     }
 
     class EP_TowerPlacementPopUp {
@@ -61,6 +99,7 @@ package SWAGroup12 {
 
     class EP_GameMode {
         -window
+        -levelManager
         +_newWithWindow(aWindow) (class)
         +getMainView() : Morph (SCR)
         +getSideView() : Morph (SCR)
@@ -76,6 +115,7 @@ package SWAGroup12 {
         -level
         -sidebar
         -gameManager
+        -enemyWaveManager
         +initialize()
         +initLevel(aLevel)
     }
@@ -108,6 +148,7 @@ package SWAGroup12 {
         -mainView
         -sideView
         -sideViewWidth
+        -levelManager
         +initialize()
         +getMainViewSize() : Point
         +getSideViewSize() : Point
@@ -125,24 +166,47 @@ package SWAGroup12 {
     }
 
     class EP_NotAGameManager {
-        -way
-        -map
-        -money
+        -balance
         -lives
-        +spawnEnemy()
+        +reduceBalanceBy(amount)
+        +reduceLivesBy(damage)
     }
 
     class EP_Level {
         -board
+        -stages
+        +initialize()
+        +initializeLevel()
     }
 
+    class EP_LevelManager {
+        -levels
+        +initialize()
+    }
+
+    EP_LevelManager --> EP_Level
+
+    EP_Level --> EP_Board
+    EP_Level --> EP_Stage
+
+    EP_Enemy --> EP_NotAGameManager
+
+    EP_EnemyWaveSpawner --> EP_Board
+    EP_EnemyWaveSpawner --> EP_NotAGameManager
+    EP_EnemyWaveSpawner --> EP_Enemy
+
+    EP_EnemyWaveManager --> EP_EnemyWaveSpawner
+    EP_EnemyWaveManager --> EP_Level
+
+    EP_EnemyWave --> EP_EnemyWaveManager
 
     EP_GameWindow --> EP_GameMode
+    EP_GameWindow --> EP_LevelManager
 
     EP_Board *--> EP_Tile
-    EP_Board *--> EP_Enemy
     EP_Board --> EP_TowerPlacementPopUp
 
+    EP_GameMode --> EP_LevelManager
     EP_GameMode <|-- EP_MenuMode
     EP_GameMode <|-- EP_EditorMode
     EP_GameMode <|-- EP_PlayMode
@@ -151,12 +215,12 @@ package SWAGroup12 {
     
     EP_PlayMode --> EP_Level
     EP_PlayMode --> EP_PlaySidebar
+    EP_PlayMode --> EP_EnemyWaveSpawner
+
     EP_EditorMode --> EP_Level
     EP_EditorMode --> EP_EditorSidebar
-    EP_Level --> EP_Board
 
-    EP_PlayMode ... EP_NotAGameManager
-    EP_NotAGameManager *--> EP_Enemy
+    EP_PlayMode --> EP_NotAGameManager
     EP_TowerPlacementPopUp --> EP_Tile
     
     EP_Tile --> EP_Board
