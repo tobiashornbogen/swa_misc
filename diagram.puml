@@ -215,7 +215,6 @@ package SWAGroup12 {
     
     EP_PlayMode --> EP_Level
     EP_PlayMode --> EP_PlaySidebar
-    EP_PlayMode --> EP_EnemyWaveSpawner
 
     EP_EditorMode --> EP_Level
     EP_EditorMode --> EP_EditorSidebar
@@ -229,6 +228,7 @@ package SWAGroup12 {
 
     EP_EditorSidebar --|> EP_Sidebar 
     EP_PlaySidebar --|> EP_Sidebar
+    EP_PlaySidebar --> EP_EnemyWaveManager
 }
 
 @enduml
