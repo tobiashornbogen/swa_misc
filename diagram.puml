@@ -1,234 +1,152 @@
 @startuml
 
+title Simplified Architecture Diagram
+
 package SWAGroup12 {
 
-
-    class EP_Board {
-        -tiles : Matrix
-        -boardSize : Point
-        -tileSize
-        -way
-        -manager
-        -towerPlacementPopUp
-        -towerPlacementPopUpSize
-        +initialize()
-        +backgroundImagePath(aPath)
-        +redrawGridWithTileType(aTileClass)
-        +setPixelSize(aPoint)
-        +setTowerPlacementPopup(aPopup)
+    class EP_GameWindow {
+        -mode : EP_GameMode
+        -levelManager : EP_LevelManager
+        -mainView : Morph
+        -sideView : Morph
+        -sideViewWidth : Number
     }
 
-    class EP_Tile {
-        -board
-        -matrixLocation
-        -occupied
-        -locked
-        +initialize()
-        +leftClicked() (SCR)
-        +size(aPointOrLength)
-    }
-
-    class EP_EditorTile {
-        +leftClicked()
-    }
-    class EP_PlayTile {
-        +leftClicked()
-        +placeTower(aTower)
-    }
-
-    class EP_Enemy {
-        -damage
-        -health
-        -speed
-        -way
-        -position
-        -progress
-        -tileProgress
-        -distancePerStep
-        -stepsPerTile
-        -gameManager
-        -enemyWaveManager
-        -transformationMorph
-        +initialize()
-        +kill()
-        +moveAlongPath()
-        +addSpecification(enemySpecificationType)
-    }
-
-    class EP_EnemyWaveSpawner {
-        -gameManager
-        -board
-        +initialize()
-        +spawnWave(enemyWave)
-        +spawnEnemy(enemySpecification, enemyWave)
-    }
-
-    class EP_EnemyWave {
-        -enemyWaveManager
-        -enemySpecification
-        -enemyCount
-        -enemiesLeft
-        -enemySpawnTime
-        -waveStartingTime
-        +initialize()
-        +anEnemyDied()
-    }
-
-    class EP_EnemyWaveManager {
-        -level
-        -enemyWaveSpawner
-        -stageCount
-        -wavesInStage
-        -stageRunning
-        +initialize()
-        +nextStartStage()
-        +waveFinished()
-    }
-
-    class EP_Stage {
-        -waves
-        +initialize()
-    }
-
-    class EP_TowerPlacementPopUp {
-        -tile
-        -board
-        +initializeWith(aBoard, aTile)
-        +placeTowerWithAsset(aAsset)
-    }
-
-    class EP_GameMode {
-        -window
-        -levelManager
-        +_newWithWindow(aWindow) (class)
-        +getMainView() : Morph (SCR)
-        +getSideView() : Morph (SCR)
+    abstract class EP_GameMode {
+        -window : EP_GameWindow
+        -levelManager : EP_LevelManager
     }
 
     class EP_MenuMode {
-        -menuPage
-        +initialize()
-        +quitGame()
-    }
-
-    class EP_PlayMode {
-        -level
-        -sidebar
-        -gameManager
-        -enemyWaveManager
-        +initialize()
-        +initLevel(aLevel)
     }
 
     class EP_EditorMode {
-        -level
-        -sidebar
-        -phase
-        +initialize()
-        +initLevel(aLevel)
-        +phase(aPhase)
+        -level : EP_Level
+        -sidebar : EP_EditorSidebar
     }
 
-    class EP_Sidebar {
-        -manager
-        +drawForExtent(aPoint)
+    class EP_PlayMode {
+        -level : EP_Level
+        -sidebar : EP_PlaySidebar
+        -gameManager : EP_NotAGameManager
+        -enemyWaveManager : EP_EnemyWaveManager
     }
 
-    class EP_EditorSidebar {
-        +initialize()
-        +adjustToPhase(aPhase)
-    }
-
-    class EP_PlaySidebar {
-        +initialize()
-    }
-
-    class EP_GameWindow {
-        -mode
-        -mainView
-        -sideView
-        -sideViewWidth
-        -levelManager
-        +initialize()
-        +getMainViewSize() : Point
-        +getSideViewSize() : Point
-        +openInWindow()
-        +switchToEditorWithLevel(aLevel)
-        +switchToPlayWithLevel(aLevel)
-        +switchToMenu()
-    }
-
-    class EP_Menu {
-        -manager
-        +initialize()
-        +extent()
-        +drawMainpage()
-    }
-
-    class EP_NotAGameManager {
-        -balance
-        -lives
-        +reduceBalanceBy(amount)
-        +reduceLivesBy(damage)
-    }
-
-    class EP_Level {
-        -board
-        -stages
-        +initialize()
-        +initializeLevel()
-    }
-
-    class EP_LevelManager {
-        -levels
-        +initialize()
-    }
-
-    EP_LevelManager --> EP_Level
-
-    EP_Level --> EP_Board
-    EP_Level --> EP_Stage
-
-    EP_Enemy --> EP_NotAGameManager
-
-    EP_EnemyWaveSpawner --> EP_Board
-    EP_EnemyWaveSpawner --> EP_NotAGameManager
-    EP_EnemyWaveSpawner --> EP_Enemy
-
-    EP_EnemyWaveManager --> EP_EnemyWaveSpawner
-    EP_EnemyWaveManager --> EP_Level
-
-    EP_EnemyWave --> EP_EnemyWaveManager
-
-    EP_GameWindow --> EP_GameMode
-    EP_GameWindow --> EP_LevelManager
-
-    EP_Board *--> EP_Tile
-    EP_Board --> EP_TowerPlacementPopUp
-
-    EP_GameMode --> EP_LevelManager
     EP_GameMode <|-- EP_MenuMode
     EP_GameMode <|-- EP_EditorMode
     EP_GameMode <|-- EP_PlayMode
 
+    EP_GameWindow --> EP_GameMode
+    EP_GameWindow --> EP_LevelManager
+
+    class EP_Level {
+        -board : EP_Board
+        -stages : EP_Stage[*]
+    }
+
+    class EP_Level_1 {}
+    class EP_Level_2 {}
+
+    EP_LevelManager --> EP_Level
+
+    class EP_Board {
+        -tiles : Matrix of EP_Tile
+        -manager
+        -towerPlacementPopUp : EP_TowerPlacementPopUp
+    }
+
+    class EP_Tile {
+        -board : EP_Board
+        -occupied : Boolean
+        -locked : Boolean
+    }
+
+    class EP_EditorTile {}
+    class EP_PlayTile {}
+
+    EP_Tile <|-- EP_EditorTile
+    EP_Tile <|-- EP_PlayTile
+
+    EP_Level --> EP_Board
+    EP_Level --> EP_Stage
+
+    class EP_Stage {
+        -waves : EP_EnemyWave[*]
+    }
+
+    class EP_Enemy {
+        -gameManager : EP_NotAGameManager
+        -enemyWaveManager : EP_EnemyWaveManager
+    }
+
+    class EP_EnemyWave {
+        -enemyWaveManager : EP_EnemyWaveManager
+    }
+
+    class EP_EnemyWaveSpawner {
+        -gameManager : EP_NotAGameManager
+        -board : EP_Board
+    }
+
+    class EP_EnemyWaveManager {
+        -level : EP_Level
+        -enemyWaveSpawner : EP_EnemyWaveSpawner
+    }
+
+    EP_EnemyWaveManager --> EP_EnemyWaveSpawner
+    EP_EnemyWaveManager --> EP_Level
+    EP_EnemyWaveSpawner --> EP_Board
+    EP_EnemyWaveSpawner --> EP_NotAGameManager
+    EP_EnemyWaveSpawner --> EP_Enemy
+
+    EP_EnemyWave --> EP_EnemyWaveManager
+    EP_Enemy --> EP_NotAGameManager
+
+    class EP_Tower {
+        -tile : EP_Tile
+        -board : EP_Board
+    }
+
+    class EP_TowerPlacementPopUp {
+        -tile : EP_Tile
+        -board : EP_Board
+    }
+
+    EP_TowerPlacementPopUp --> EP_Tile
+    EP_TowerPlacementPopUp --> EP_Board
+
+    class EP_Sidebar {
+        -manager : EP_GameMode
+    }
+
+    class EP_EditorSidebar {}
+    class EP_PlaySidebar {
+        -enemyWaveManager : EP_EnemyWaveManager
+    }
+
+    EP_EditorSidebar --|> EP_Sidebar
+    EP_PlaySidebar --|> EP_Sidebar
+
+    class EP_Menu {
+        -manager : EP_MenuMode
+    }
+
     EP_MenuMode --> EP_Menu
-    
-    EP_PlayMode --> EP_Level
-    EP_PlayMode --> EP_PlaySidebar
+
+    class EP_NotAGameManager {
+        -balance : Number
+        -lives : Number
+    }
+
+    EP_PlayMode --> EP_EnemyWaveManager
+    EP_PlayMode --> EP_NotAGameManager
 
     EP_EditorMode --> EP_Level
     EP_EditorMode --> EP_EditorSidebar
 
-    EP_PlayMode --> EP_NotAGameManager
-    EP_TowerPlacementPopUp --> EP_Tile
-    
-    EP_Tile --> EP_Board
-    EP_Tile <|-- EP_PlayTile
-    EP_Tile <|-- EP_EditorTile
+    EP_PlayMode --> EP_Level
+    EP_PlayMode --> EP_PlaySidebar
 
-    EP_EditorSidebar --|> EP_Sidebar 
-    EP_PlaySidebar --|> EP_Sidebar
-    EP_PlaySidebar --> EP_EnemyWaveManager
 }
 
 @enduml
