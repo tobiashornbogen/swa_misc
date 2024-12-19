@@ -10,7 +10,7 @@ An vielen Stellen unseres Codes werden Referenzen auf andere Objekte benötigt, 
 
 ## Factory / Builder Patterns
 
-Wir hatten ja schon ein paar Mal besprochen, dass an einigen Stellen Builder patterns eine Möglichkeit wären, den Code zu verbessern. Zum Beispiel in `EP_Board` muss die Initialiserung in einer klaren Reihenfolge stattfinden. Für Board wäre vielleicht sogar schon ein Builder angebracht, ansonsten könnte man an einigen Stellen, wie zum Beispiel Enemies vermutlich gut eine Factory benutzen. `initLevel` würde sich auch für eine Factory anbieten.
+Wir hatten ja schon ein paar Mal besprochen, dass an einigen Stellen Builder patterns eine Möglichkeit wären, den Code zu verbessern. Zum Beispiel in `EP_Board` muss die Initialiserung in einer klaren Reihenfolge stattfinden. Für Board wäre vielleicht sogar schon ein Builder angebracht, ansonsten könnte man an einigen Stellen, wie zum Beispiel Enemies vermutlich gut eine Factory benutzen. `initLevel` würde sich auch für ein Builder anbieten.
 
 ## Event Driven Architecture (Observer Pattern)
 
