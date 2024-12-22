@@ -1,6 +1,12 @@
 @startuml
 
-title Simplified Architecture Diagram
+title Architecture Diagram
+
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam ClassBackgroundColor #FEFEFE
+skinparam ClassBorderColor #000000
+skinparam Padding 2
 
 package SWAGroup12 {
 
@@ -14,10 +20,10 @@ package SWAGroup12 {
 
     abstract class EP_GameMode {
         -window : EP_GameWindow
-        -levelManager : EP_LevelManager
     }
 
     class EP_MenuMode {
+        -menuPage : EP_Menu
     }
 
     class EP_EditorMode {
@@ -30,14 +36,15 @@ package SWAGroup12 {
         -sidebar : EP_PlaySidebar
         -gameManager : EP_NotAGameManager
         -enemyWaveManager : EP_EnemyWaveManager
+        -enemyWaveSpawner: EP_EnemyWaveSpawner
     }
 
     EP_GameMode <|-- EP_MenuMode
     EP_GameMode <|-- EP_EditorMode
     EP_GameMode <|-- EP_PlayMode
 
-    EP_GameWindow --> EP_GameMode
-    EP_GameWindow --> EP_LevelManager
+    EP_GameWindow *--> EP_GameMode
+    EP_GameWindow *--> EP_LevelManager
 
     class EP_Level {
         -board : EP_Board
@@ -47,28 +54,30 @@ package SWAGroup12 {
     class EP_Level_1 {}
     class EP_Level_2 {}
 
-    EP_LevelManager --> EP_Level
+    EP_LevelManager *--> EP_Level
 
     class EP_Board {
         -tiles : Matrix of EP_Tile
-        -manager
+        -manager: EP_PlayMode
         -towerPlacementPopUp : EP_TowerPlacementPopUp
+        -enemies: EP_Enemy[*]
     }
 
     class EP_Tile {
         -board : EP_Board
-        -occupied : Boolean
-        -locked : Boolean
     }
 
     class EP_EditorTile {}
-    class EP_PlayTile {}
+    class EP_PlayTile {
+        -tower : EP_Tower
+        -towerInRange : EP_Tower[*]
+    }
 
     EP_Tile <|-- EP_EditorTile
     EP_Tile <|-- EP_PlayTile
 
-    EP_Level --> EP_Board
-    EP_Level --> EP_Stage
+    EP_Level *--> EP_Board
+    EP_Level *--> EP_Stage
 
     class EP_Stage {
         -waves : EP_EnemyWave[*]
@@ -77,6 +86,9 @@ package SWAGroup12 {
     class EP_Enemy {
         -gameManager : EP_NotAGameManager
         -enemyWaveManager : EP_EnemyWaveManager
+        -enemyWave: EP_EnemyWave
+        -board: EP_Board
+        -towerInRange: EP_Tower[*]
     }
 
     class EP_EnemyWave {
@@ -93,8 +105,8 @@ package SWAGroup12 {
         -enemyWaveSpawner : EP_EnemyWaveSpawner
     }
 
-    EP_EnemyWaveManager --> EP_EnemyWaveSpawner
-    EP_EnemyWaveManager --> EP_Level
+    EP_EnemyWaveManager *--> EP_EnemyWaveSpawner
+    EP_EnemyWaveManager *--> EP_Level
     EP_EnemyWaveSpawner --> EP_Board
     EP_EnemyWaveSpawner --> EP_NotAGameManager
     EP_EnemyWaveSpawner --> EP_Enemy
@@ -105,15 +117,8 @@ package SWAGroup12 {
     class EP_Tower {
         -tile : EP_Tile
         -board : EP_Board
+        -enemiesInRange: EP_enemy[*]
     }
-
-    class EP_TowerPlacementPopUp {
-        -tile : EP_Tile
-        -board : EP_Board
-    }
-
-    EP_TowerPlacementPopUp --> EP_Tile
-    EP_TowerPlacementPopUp --> EP_Board
 
     class EP_Sidebar {
         -manager : EP_GameMode
@@ -122,6 +127,8 @@ package SWAGroup12 {
     class EP_EditorSidebar {}
     class EP_PlaySidebar {
         -enemyWaveManager : EP_EnemyWaveManager
+        -gameManager : EP_NotAGameManager
+        -board : EP_Board
     }
 
     EP_EditorSidebar --|> EP_Sidebar
@@ -134,8 +141,6 @@ package SWAGroup12 {
     EP_MenuMode --> EP_Menu
 
     class EP_NotAGameManager {
-        -balance : Number
-        -lives : Number
     }
 
     EP_PlayMode --> EP_EnemyWaveManager
